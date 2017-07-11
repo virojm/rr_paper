@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		# Purchase order
+		<record id="purchase_order_form" model="ir.actions.report.xml">
+			<field name="string">Purchase Order (Jasper)</field>
+			<field name="auto">True</field>
+			<field name="model">purchase.order</field>
+			<field name="jasper_model_id" ref="purchase.model_purchase_order"/>
+			<field name="name">Purchase Order (Jasper)</field>
+			<field name="report_name">purchase_order_form</field>
+			<field name="report_rml">jrxml_reports/reports/purchase_order_form.jrxml</field>
+			<field name="menu">True</field>
+			<field name="header">False</field>
+			<field name="jasper_report">True</field>
+			<field name="jasper_output">pdf</field>
+			<field name="copies">2</field>
+			<field name="force_locale">th_TH</field>
+		</record>
+
+		<record id="purchase_order_form_values" model="ir.values">
+			<field name="name">Purchase Order (Jasper)</field>
+			<field name="model">purchase.order</field>
+			<field name="key2" eval="'client_print_multi'"/>
+			<field name="value_unpickle" eval="'ir.actions.report.xml, ' +str(purchase_order_form)"/>
+		</record>
+
+	</data>
+</openerp>
