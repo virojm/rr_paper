@@ -35,5 +35,38 @@
                 </notebook>
             </field>
         </record>
+
+        <record id="product_template_only_form_view" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <field name="default_code" position="after">
+                    <field name="is_rm" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_template_rm_action" model="ir.actions.act_window">
+            <field name="name">Raw Materials</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="domain">[('is_rm','=',True)]</field>
+            <field name="context">{"search_default_filter_to_sell":1, "is_rm":True}</field>
+        </record>
+
+        <record id="product_template_fg_action" model="ir.actions.act_window">
+            <field name="name">Finished Goods</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="domain">[('is_rm','=',False)]</field>
+            <field name="context">{"search_default_filter_to_sell":1, "is_rm":False}</field>
+        </record>
     </data>
 </openerp>

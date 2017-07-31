@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <menuitem id="menu_rm" name="Raw Materials" parent="stock.menu_stock_product" action="product_ext.product_template_rm_action" sequence="20"/>
+        <menuitem id="menu_fg" name="Finished Goods" parent="stock.menu_stock_product" action="product_ext.product_template_fg_action" sequence="30"/>
+    </data>
+</openerp>

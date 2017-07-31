@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
-from openerp import models, fields, api, _
+from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    is_rm = fields.Boolean(
+        string='IS RM',
+        default=lambda self:self._context.copy().get('is_rm', False),
+    )
     _layers = [('a', 'A'),
                ('b', 'B'),
                ('c', 'C'),
