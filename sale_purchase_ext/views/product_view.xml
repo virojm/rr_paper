@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product.product_template_action" model="ir.actions.act_window">
+            <field name="domain">[('sale_ok','=',True),('purchase_ok','=',False)]</field>
+        </record>
+
+        <record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
+            <field name="domain">[('purchase_ok','=',True)]</field>
+        </record>
+    </data>
+</openerp>

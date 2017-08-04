@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Stock Extension',
+    'name': 'Sale Stock Extension',
     'version': '0.1',
-    'category': 'Warehouse',
+    'category': 'Technical Settings',
     'author': 'Viroj, Technisoft Co., Ltd',
     'depends': [
-        'stock',
-        'product_ext',
+        'sale_stock',
     ],
     'data': [
-        'views/product_view.xml',
-        'views/stock_view.xml',
+        'views/sale_stock_view.xml',
     ],
     'installable': True,
     'auto_install': False,

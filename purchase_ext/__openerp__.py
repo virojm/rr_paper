@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Stock Extension',
+    'name': 'Purchase Extension',
     'version': '0.1',
-    'category': 'Warehouse',
+    'category': 'Purchases',
     'author': 'Viroj, Technisoft Co., Ltd',
     'depends': [
-        'stock',
-        'product_ext',
+        'purchase',
     ],
     'data': [
-        'views/product_view.xml',
-        'views/stock_view.xml',
+        'views/purchase_view.xml',
     ],
     'installable': True,
     'auto_install': False,

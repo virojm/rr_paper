@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <delete model="ir.ui.menu" id="sale.menu_sale_quotations"/>
+
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="domain"></field>
+        </record>
+    </data>
+</openerp>
