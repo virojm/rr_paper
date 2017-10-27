@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+      <act_window id="action_prod2sales"
+        name="Prod to Sales"
+        res_model="product.template"
+        domain="[('sale_ok', '=', True), ('purchase_ok', '=', False)]"
+        view_mode="tree,form"/>
+
+      <menuitem id="menu_prod2sales"
+        name="Prod-to-Sales"
+        parent="base.menu_product"
+        sequence="20"
+        action="action_prod2sales"/>
+
+        <!-- To hide menuitem -->
+        <record id="make_invisible" model="res.groups">
+          <field name="name">Invisible</field>
+        </record>
+        <record model="ir.ui.menu" id="product.menu_product_template_action">
+          <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+        </record>
+
+        <record id="product_template_only_form_view" model="ir.ui.view">
+            <field name="name">product.template.only.form.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <group name="sale_condition" position="before">
+                    <group name="sale_partner" string="Sale Partner" colspan="3">
+                        <label for="sale_partner_id"/>
+                        <div>
+                            <field name="sale_partner_id" class="oe_inline"/>
+                        </div>
+                    </group>
+                </group>
+            </field>
+        </record>
+<!--
+        <record id="product_template_search_view" model="ir.ui.view">
+            <field name="name">product.template.search</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="partner_id" domain="[('customer','=', True)]"/>
+                </field>
+                <group position="inside">
+                    <filter string="Partner" domain="[]" context="{'group_by' : 'partner_id'}"/>
+                </group>
+            </field>
+        </record> -->
+
+    </data>
+</openerp>

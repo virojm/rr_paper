@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+      <act_window id="action_prod2sales"
+        name="Prod to Purchase"
+        res_model="product.template"
+        domain="[('sale_ok', '=', False), ('purchase_ok', '=', True)]"
+        view_mode="tree,form"/>
+
+      <menuitem id="menu_prod2sales"
+        name="Prod-to-Purchase"
+        parent="purchase.menu_procurement_management_product"
+        sequence="20"
+        action="action_prod2sales"/>
+
+        <!-- To hide menuitem -->
+        <record id="make_invisible" model="res.groups">
+          <field name="name">Invisible</field>
+        </record>
+        <record model="ir.ui.menu" id="purchase.menu_procurement_partner_contact_form">
+          <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+        </record>
+        <!-- <record id="view_product_template_purchase_buttons_from" model="ir.ui.view">
+            <field name="name">product.template.purchase.button.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="groups_id" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+            <field name="arch" type="xml">x
+                <xpath expr="//div[@name='buttons']" position="inside">
+                   <button class="oe_inline oe_stat_button" name="action_view_purchases" type="object"
+                       icon="fa-shopping-cart">
+                       <field string="Purchases" name="purchase_count" widget="statinfo"/>
+                   </button>
+                </xpath>
+            </field>
+        </record> -->
+        <record id="product_template_only_form_view" model="ir.ui.view">
+            <field name="name">product.template.only.form.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <page string="Procurements" position="attributes">
+                    <attribute name="attrs">
+                    {
+                        'invisible': [('purchase_ok', '!=', True)],
+                    }
+                    </attribute>
+                </page>
+            </field>
+        </record>
+    </data>
+</openerp>
