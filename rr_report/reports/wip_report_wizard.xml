@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="wip_report_wizard" model="ir.ui.view">
+            <field name="name">WIP Report</field>
+            <field name="model">wip.report.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Selection Criteria">
+                    <group>
+                        <group>
+                            <field name="location_id"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Run Report" name="run_report" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_wip_report_wizard" model="ir.actions.act_window">
+            <field name="name">WIP Report</field>
+            <field name="res_model">wip.report.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="wip_report_wizard"/>
+            <field name="target">new</field>
+            <field name="help">Print WIP Report</field>
+        </record>
+
+        <menuitem
+          id="menu_action_wip_report_wizard"
+          action="action_wip_report_wizard"
+          parent="stock.menu_stock_product"
+          sequence="110"/>
+
+    </data>
+</openerp>

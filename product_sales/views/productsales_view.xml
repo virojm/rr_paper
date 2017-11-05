@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
       <act_window id="action_prod2sales"
         name="Prod to Sales"
         res_model="product.template"
-        domain="[('sale_ok', '=', True), ('purchase_ok', '=', False)]"
-        view_mode="tree,form"/>
+        domain="[('sale_ok', '=', True),('purchase_ok', '=', False)]"
+        context="
+          {
+            'default_sale_ok': True,
+            'default_purchase_ok': False,
+            'search_default_filter_to_sell': 1,
+          }
+        "
+        view_mode="kanban,tree,form"/>
 
       <menuitem id="menu_prod2sales"
         name="Prod-to-Sales"
-        parent="base.menu_product"
+        parent="sales_team.menu_sales"
         sequence="20"
         action="action_prod2sales"/>
 
-        <!-- To hide menuitem -->
+        <!-- To hide menuitem: Products -->
         <record id="make_invisible" model="res.groups">
           <field name="name">Invisible</field>
         </record>
-        <record model="ir.ui.menu" id="product.menu_product_template_action">
+        <record model="ir.ui.menu" id="sale.menu_product_template_action">
           <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
         </record>
 
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.product.tree</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree string="Product">
+
+                    <field name="list_price" invisible="1"/>
+                    <field name="standard_price" invisible="1"/>
+
+                </tree>
+            </field>
+        </record>
+
         <record id="product_template_only_form_view" model="ir.ui.view">
-            <field name="name">product.template.only.form.view</field>
+            <field name="name">product.template_only_form_view</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
+
                 <group name="sale_condition" position="before">
                     <group name="sale_partner" string="Sale Partner" colspan="3">
                         <label for="sale_partner_id"/>
@@ -35,10 +55,50 @@
                         </div>
                     </group>
                 </group>
+
             </field>
         </record>
-<!--
-        <record id="product_template_search_view" model="ir.ui.view">
+
+        <record id="product_template_kanban_view" model="ir.ui.view">
+            <field name="name">Product.template.product.kanban</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="image_small"/>
+                    <field name="lst_price"/>
+                    <field name="product_variant_count"/>
+                    <field name="product_variant_ids"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('product.template', 'image_small', record.id.value)"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        <span t-if="record.default_code.value">[<field name="default_code"/>]</span>
+                                        <field name="name"/>
+                                    </strong>
+                                    <div t-if="record.product_variant_count.value &gt; 1" groups="product.group_product_variant">
+                                        <strong>
+                                            <t t-esc="record.product_variant_count.value"/> Variants
+                                        </strong>
+                                    </div>
+                                    <div name="tags"/>
+                                    <ul>
+                                        <li>Price: <field name="lst_price" widget="monetary"></field></li>
+                                    </ul>
+                                    <div name="tags"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- <record id="product_template_search_view" model="ir.ui.view">
             <field name="name">product.template.search</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_search_view"/>
@@ -51,6 +111,20 @@
                 </group>
             </field>
         </record> -->
+
+        <record id="product_template_action_all" model="ir.actions.act_window">
+            <field name="name">Prod to Sales</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to define a new product.
+                </p>
+            </field>
+        </record>
 
     </data>
 </openerp>

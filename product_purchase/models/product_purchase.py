@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 from openerp import models, fields, api
-
 class ProductTemplatePurchase(models.Model):
-    _name = 'producttemplatepurchase'
-    _inherit = 'product.product'
-    partner_id = fields.Many2one(
-        'res.partner',size=40,
-    )
+    _inherit = 'product.template'
+    # purchase_partner_id = fields.Many2one(
+    #     'res.partner',
+    #     string="Supplier",
+    #     size=80,
+    # )

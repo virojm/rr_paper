@@ -1,21 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <record id="view_order_form_inherit" model="ir.ui.view">
-            <field name="name">sale.order.form</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+
+      <record id="sale.action_quotations" model="ir.actions.act_window">
+          <field name="name">Sales Orders</field>
+          <field name="type">ir.actions.act_window</field>
+          <field name="res_model">sale.order</field>
+          <field name="view_type">form</field>
+          <field name="view_id" ref="sale.view_quotation_tree"/>
+          <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+          <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+          <field name="context">{'hide_sale': True}</field>
+          <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Create a Quotation, the first step of a new sale.
+            </p><p>
+              Your next actions should flow efficiently: confirm the Quotation
+              to a Sale Order, then create the Invoice and collect the Payment.
+            </p><p>
+              Note that once a Quotation becomes a Sale Order, it will be moved
+              from the Quotations list to the Sales Order list.
+            </p>
+          </field>
+      </record>
+
+      <record id="sale.view_quotation_tree" model="ir.ui.view">
+          <field name="name">sale.order.tree</field>
+          <field name="model">sale.order</field>
+          <field name="priority">4</field>
+          <field name="arch" type="xml">
+              <tree string="Quotation" class="o_sale_order" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'">
+                  <field name="message_needaction" invisible="1"/>
+                  <field name="name" string="Sales Order No."/>
+                  <field name="date_order"/>
+                  <field name="partner_id"/>
+                  <field name="user_id"/>
+                  <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                  <field name="currency_id" invisible="1"/>
+                  <field name="state"/>
+              </tree>
+          </field>
+      </record>
+
+      <!-- To hide menuitem: Products -->
+      <record id="make_invisible" model="res.groups">
+        <field name="name">Invisible</field>
+      </record>
+      <record model="ir.ui.menu" id="sale.menu_sale_order">
+        <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+      </record>
+
+      <record id="make_invisible" model="res.groups">
+        <field name="name">Invisible</field>
+      </record>
+      <record model="ir.ui.menu" id="sales_team.menu_sale_config">
+        <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+      </record>
+
+      <!-- Change Menu name -->
+      <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+        <field name="name">Sales Orders</field>
+      </record>
+      <record id="purchase.menu_purchase_rfq" model="ir.ui.menu">
+        <field name="name">Purchase Orders (Draft)</field>
+      </record>
+
+      <record id="view_order_form_inherit_sale_stock" model="ir.ui.view">
+          <field name="name">sale.order.form</field>
+          <field name="model">sale.order</field>
+          <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
             <field name="arch" type="xml">
               <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
                   <field name="product_id"
                   invisible="1"
                   context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
-                  groups="base.group_user"
-                  on_change="product_id_change_with_wh(parent.pricelist_id,product_id,product_uom_qty,False,product_uos_qty,False,name,parent.partner_id, False, True, parent.date_order, product_packaging, parent.fiscal_position, False, parent.warehouse_id, context)"/>
-              </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
-                    <field name="x_product_id" domain="[('sale_partner_id', '=', parent.partner_id)]"/>
+                  groups="base.group_user"/>
                 </xpath>
+              <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                  <field name="x_product_id" domain="[('sale_partner_id', '=', parent.partner_id)]"/>
+              </xpath>
+              <!-- <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                <field name="state"/>
+              </xpath> -->
             </field>
         </record>
 
