@@ -5,4 +5,4 @@ class ResPartner(models.Model):
 
     tax_id = fields.Char('Tax ID')
     is_company = fields.Boolean(default= True)
-    company_type = fields.Char()
+    company_type = fields.Char(default='company')
