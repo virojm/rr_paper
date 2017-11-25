@@ -9,6 +9,7 @@
     ],
     'data': [
         'views/purchase_view.xml',
+        'views/respartner_view.xml',
     ],
     'installable': True,
     'auto_install': False,
