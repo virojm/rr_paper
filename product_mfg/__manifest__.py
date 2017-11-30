@@ -7,6 +7,7 @@
     'depends': ['mrp'],
     'data': [
         'views/product_mfg_view.xml',
+        'views/bom_view.xml',
     ],
     'installable': True,
     'auto_install': False,

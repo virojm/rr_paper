@@ -35,6 +35,7 @@ class SaleOrderLine(models.Model):
     def _onchange_x_product(self):
         self.product_id = self.x_product_id.id
 
+    # This below portion copy from Std Addons..
     @api.multi
     @api.onchange('product_id')
     def product_id_change(self):
