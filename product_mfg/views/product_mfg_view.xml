@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+      <act_window id="action_prod2mfg"
+        name="Prod to Manufacture"
+        res_model="product.template"
+        domain="[('purchase_ok', '!=', True)]"
+
+        view_mode="kanban,tree,form"/>
+
+      <menuitem id="menu_prod2mfg"
+        name="Prod-to-Manufacture"
+        parent="mrp.menu_mrp_bom"
+        sequence="20"
+        action="action_prod2mfg"/>
+
+        <!-- To hide menuitem -->
+        <record id="make_invisible" model="res.groups">
+          <field name="name">Invisible</field>
+        </record>
+        <record model="ir.ui.menu" id="mrp.menu_mrp_product_form">
+          <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+        </record>
+
+
+    </data>
+</openerp>
