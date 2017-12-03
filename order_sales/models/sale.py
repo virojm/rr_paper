@@ -8,8 +8,8 @@ class SaleOrder(models.Model):
     partner_id = fields.Many2one(
         'res.partner',
 #        domain=[('supplier', '!=', True)],
-        domain=[('customer', '=', True)],
-        string="Customer",
+        domain=[('customer','=', True),('supplier','!=', True)],
+        string="Customer:",
         size=80,
     )
 
