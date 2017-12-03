@@ -86,7 +86,7 @@
             </field>
         </record>
 
-        <tree string="Sales Order Lines" editable="bottom" decoration-info="invoice_status=='to invoice'">
+        <!-- <tree string="Sales Order Lines" editable="bottom" decoration-info="invoice_status=='to invoice'">
             <field name="sequence" widget="handle"/>
             <field name="product_id"
                 attrs="{'readonly': ['|', ('qty_invoiced', '&gt;', 0), ('procurement_ids', '!=', [])]}"
@@ -121,7 +121,7 @@
             <field name="invoice_status" invisible="1"/>
             <field name="customer_lead" invisible="1"/>
             <field name="currency_id" invisible="1"/>
-        </tree>
+        </tree> -->
 
     </data>
 </openerp>
