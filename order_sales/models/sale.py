@@ -5,26 +5,26 @@ from openerp import models, fields, api
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    partner_id = fields.Many2one(
+        'res.partner',
+#        domain=[('supplier', '!=', True)],
+        domain=[('customer', '=', True)],
+        string="Customer",
+        size=80,
+    )
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('sent', 'Quotation Sent'),
         ('sale', 'Sale Order'),
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+        ], string='Status', readonly=True, copy=False, index=True,
+        track_visibility='onchange', default='draft')
 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-
-    # state = fields.Selection([
-    #     ('draft', 'Draft'),
-    #     ('sent', 'Quotation Sent'),
-    #     ('sale', 'Sale Order'),
-    #     ('done', 'Done'),
-    #     ('cancel', 'Cancelled'),
-    # ], related='order_id.state', string='Order Status',
-    # readonly=True, copy=False, store=True, default='draft')
 
     x_product_id = fields.Many2one(
         'product.template',
