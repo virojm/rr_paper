@@ -8,15 +8,16 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
               <field name="name" position="after">
-                  <field name="tax_id" placeholder="Tax ID"/>
+                  <field name="vat" string="Tax ID" placeholder='TAX ID'/>
+                  <!-- <field name="person_name" placeholder="Contact Person"/> -->
               </field>
 
               <field name="company_type" position="attributes">
                   <attribute name="invisible">1</attribute>
               </field>
-              <field name="is_company" position="attributes">
+
+              <field name="parent_id" position="attributes">
                   <attribute name="invisible">1</attribute>
-                  <attribute name="is_company">1</attribute>
               </field>
 
             </field>

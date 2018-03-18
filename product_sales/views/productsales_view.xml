@@ -51,7 +51,7 @@
                     <group name="sale_partner" string="Sale Partner" colspan="3">
                         <label for="sale_partner_id"/>
                         <div>
-                            <field name="sale_partner_id" class="oe_inline"/>
+                            <field name="sale_partner_id" class="oe_inline" options="{'no_quick_create': True, 'no_create_edit': True,}"/>
                         </div>
                     </group>
                 </group>
@@ -126,6 +126,6 @@
             </field>
         </record>
 
-      
+
     </data>
 </openerp>

@@ -20,7 +20,7 @@ class ProductTemplateSales(models.Model):
     sale_partner_id = fields.Many2one(
         'res.partner',
 #        domain=[('supplier', '!=', True)],
-        domain=[('customer', '=', True)],
+        domain=[('customer', '=', True), ('parent_id', '=', False)],
         string="Customer",
         size=80,
     )
