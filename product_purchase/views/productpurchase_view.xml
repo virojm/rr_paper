@@ -4,9 +4,8 @@
       <act_window id="action_prod2purchase"
         name="Prod to Purchase"
         res_model="product.template"
-        domain="[('sale_ok', '=', False),('purchase_ok', '=', True)]"
+        domain="[('purchase_ok', '=', True)]"
         context="{
-          'default_sale_ok': False,
           'default_purchase_ok': True,
           'search_default_filter_to_purchase':1,
         }"

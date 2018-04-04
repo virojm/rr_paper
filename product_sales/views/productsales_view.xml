@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-      <act_window id="action_prod2sales"
+      <act_window id="action_prod2sale"
         name="Prod to Sales"
         res_model="product.template"
-        domain="[('sale_ok', '=', True),('purchase_ok', '=', False)]"
+        domain="[('sale_ok', '=', True)]"
         context="
           {
             'default_sale_ok': True,
-            'default_purchase_ok': False,
             'search_default_filter_to_sell': 1,
           }
         "
@@ -18,7 +17,7 @@
         name="Prod-to-Sales"
         parent="sales_team.menu_sales"
         sequence="20"
-        action="action_prod2sales"/>
+        action="action_prod2sale"/>
 
         <!-- To hide menuitem: Products -->
         <record id="make_invisible" model="res.groups">
