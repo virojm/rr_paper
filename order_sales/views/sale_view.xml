@@ -88,9 +88,9 @@
                   <attribute name="options">{'no_quick_create': True, 'no_create_edit': True,}</attribute>
               </xpath>
             </field>
-            <field name="layout_category_id" invisible="1"/>
+            <!-- <field name="layout_category_id" invisible="1"/>
             <field name="route_id" invisible="1"/>
-            <field name="analytic_tag_ids" invisible="1"/>
+            <field name="analytic_tag_ids" invisible="1"/> -->
         </record>
 
         <!-- <tree string="Sales Order Lines" editable="bottom" decoration-info="invoice_status=='to invoice'">
