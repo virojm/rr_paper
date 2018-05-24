@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'JRXML Reports',
+    'name': 'Stock Open Period',
     'version': '0.1',
-    'category': 'Tools',
+    'category': 'Warehouse',
     'author': 'Viroj, Technisoft Co., Ltd',
     'depends': [
-        'purchase',
         'stock',
     ],
     'data': [
-        'wizard/wip_report_wizard.xml',
-        'wizard/report2.xml',
-        'data/report_data.xml',
+        'views/stock_open_period_view.xml',
     ],
     'installable': True,
     'auto_install': False,
+
 }

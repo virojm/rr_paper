@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="stock_period_form" model="ir.ui.view">
+            <field name="name">stock.period.form</field>
+            <field name="model">stock.period</field>
+              <field name="arch" type="xml">
+                <form string="Stock Period">
+                <header>
+                    <!-- <button name="bid_received" states="sent" string="Bid Received" class="oe_highlight"/> -->
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <label string="Stock Period" />
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_open"/>
+                        </group>
+                        <group />
+                    </group>
+                    <notebook>
+                        <page string="Period Lines">
+                            <field name="period_lines">
+                                <tree string="Period Lines" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="uom_id"/>
+                                    <field name="location_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="stock_period_tree" model="ir.ui.view">
+            <field name="name">stock.period.tree</field>
+            <field name="model">stock.period</field>
+            <field name="arch" type="xml">
+                <tree string="Stock Open Period">
+                    <field name="date_open"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_stock_period" model="ir.actions.act_window">
+            <field name="name">Stock Period</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.period</field>
+            <field name="context">{}</field>
+            <field name="view_mode">tree,form</field>
+            <!-- <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+              </p><p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your supplier. Once confirmed, a request for
+                quotation is converted into a purchase order.
+              </p><p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+              </p>
+            </field> -->
+        </record>
+
+        <menuitem action="action_stock_period" id="menu_stock_period"
+            parent="stock.menu_stock_inventory_control"
+            sequence="6"/>
+
+    </data>
+</openerp>

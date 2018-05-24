@@ -35,7 +35,7 @@
         <menuitem
           id="menu_action_wip_report_wizard"
           action="action_wip_report_wizard"
-          parent="stock.menu_stock_product"
+          parent="stock.menu_warehouse_report"
           sequence="110"/>
 
     </data>

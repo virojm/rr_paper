@@ -40,6 +40,21 @@
 			<field name="copies">1</field>
 		</record>
 
+		<!-- ///////// Report2 /////// -->
+		<record id="report2_report" model="ir.actions.report.xml">
+			<field name="string">Report2 Report</field>
+			<field name="auto">True</field>
+			<field name="model">report2.report.wizard</field>
+			<field name="name">Report2 Report</field>
+			<field name="report_name">report2_report</field>
+			<field name="report_rml">rr_report/reports/report2.jrxml</field>
+			<field name="menu">True</field>
+			<field name="header">False</field>
+			<field name="jasper_report">True</field>
+			<field name="jasper_output">pdf</field>
+			<field name="copies">1</field>
+		</record>
+
 		<record id="wip_report_values" model="ir.values">
 			<field name="name">WIP Report</field>
 			<field name="model">stock.move.order</field>
