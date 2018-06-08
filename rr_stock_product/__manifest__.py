@@ -6,6 +6,7 @@
     'author': 'Viroj, Technisoft Co., Ltd',
     'depends': [
         'stock',
+        'product_barcode',
     ],
     'data': ['views/product_views.xml',
     ],

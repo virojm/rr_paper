@@ -10,6 +10,7 @@
     ],
     'data': [
         'views/sale_view.xml',
+        'views/sale_order_views.xml',
     ],
     'installable': True,
     'auto_install': False,
