@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_card_report_origin" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="119"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.jasperserver.reportUnit" value="/SKT/WH/STOCK_CARD"/>
+	<property name="ireport.jasperserver.url" value="http://203.113.116.170:8090/jasperserver/services/repository?wsdl"/>
+	<parameter name="location_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="begin_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="end_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="product_id" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+sm.date + '7 hours'::interval as write_date,
+case when rtrim(ltrim(sp.name)) != '' then
+rtrim(ltrim(sp.name))
+else
+''
+end
+as name,
+sp.origin,
+spl.name as lot_name,
+'' as job_no,
+sm.location_dest_id,
+concat(pr.default_code,' ',pt.name)as productcode ,
+pt.name as productname ,
+sl.name as warehouse,
+case when sm.location_id = $P{location_id} then sq.qty*-1
+else sq.qty end as qtyxxx ,
+
+(case when sm.location_id = $P{location_id} and sm.location_id != sm.location_dest_id then sq.qty
+else null
+end) as "QTY OUT" ,
+
+(case when sm.location_dest_id = $P{location_id} and sm.location_id != sm.location_dest_id then sq.qty
+else null
+end) as "QTY IN",
+
+case when sm.location_id = $P{location_id} then sl2.name
+else  sl.name end as location,
+
+pu.name as uom,
+(select
+COALESCE(sum(sprl.product_qty),0) as sum
+from stock_period spr
+left join stock_period_line sprl on sprl.period_id = spr.id
+where spr.date_open < date($P{begin_date}) + '1 day'::interval
+and sprl.product_id = $P{product_id}
+and location_id = $P{location_id}
+group by sprl.id
+order by sprl.id desc
+limit 1) as balanceall,
+'' as cust_po_no
+from stock_move sm
+left join stock_quant_move_rel sqml on sm.id = sqml.move_id
+left join stock_quant sq on sq.id = sqml.quant_id
+left join stock_production_lot spl on spl.id = sq.lot_id
+left join product_product pr on sm.product_id = pr.id
+left join product_template pt on pt.id = pr.product_tmpl_id
+left join stock_picking sp on sm.picking_id = sp.id
+left join stock_location sl on sm.location_dest_id = sl.id
+left join product_uom pu on sm.product_uom = pu.id
+left join stock_location sl2 on sm.location_id = sl2.id
+
+where sm.state = 'done' and sm.product_id = $P{product_id}
+and (sm.location_id = $P{location_id} or sm.location_dest_id = $P{location_id}) and
+(sm.location_id != sm.location_dest_id)
+and
+(sm.date + interval '7 hours' >= date($P{begin_date}) AND sm.date + interval '7 hours' < date($P{end_date}) + interval '1 day')
+--order by sm.date
+union all
+select
+date($P{begin_date}) as write_date,
+'' as name,
+'' as origin,
+'' as job_no,
+'' as lot_name,
+$P{location_id} as location_dest_id,
+(select default_code from product_product where id = $P{product_id}) as productcode,
+(select name from product_template where id = $P{product_id}) as productname,
+'' as warehouse,
+0 as qtyxxx,
+0 as "QTY OUT",
+0 as "QTY IN",
+(select name from stock_location where id = $P{location_id}) as location,
+'Unit' as uom,
+(select
+COALESCE(sum(product_qty),0)
+from stock_move
+where state = 'done' and product_id = $P{product_id}
+and location_dest_id = $P{location_id} and date + '7 hours'::interval < date($P{begin_date}) )
+-
+(select
+COALESCE(sum(product_qty),0)
+from stock_move
+where state = 'done' and product_id = $P{product_id}
+and location_id = $P{location_id} and date + '7 hours'::interval < date($P{begin_date}) ) as balanceall,
+'' as cust_po_no
+where not exists (
+select
+sm.id
+from stock_move sm
+left join product_product pr on sm.product_id = pr.id
+left join product_template pt on pt.id = pr.product_tmpl_id
+left join stock_picking sp on sm.picking_id = sp.id
+left join stock_location sl on sm.location_dest_id = sl.id
+left join product_uom pu on sm.product_uom = pu.id
+where sm.state = 'done' and sm.product_id = $P{product_id}
+and (sm.location_id = $P{location_id} or sm.location_dest_id = $P{location_id})
+and
+(sm.location_id != sm.location_dest_id)
+and
+(sm.date + interval '7 hours' >= date($P{begin_date}) AND sm.date + interval '7 hours' < date($P{end_date})+ interval '1 day'))
+order by write_date]]>
+	</queryString>
+	<field name="write_date" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[Last Updated on]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String"/>
+	<field name="origin" class="java.lang.String">
+		<fieldDescription><![CDATA[Source Document]]></fieldDescription>
+	</field>
+	<field name="lot_name" class="java.lang.String">
+		<fieldDescription><![CDATA[Lot/Serial Number]]></fieldDescription>
+	</field>
+	<field name="job_no" class="java.lang.String"/>
+	<field name="location_dest_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Destination Location]]></fieldDescription>
+	</field>
+	<field name="productcode" class="java.lang.String"/>
+	<field name="productname" class="java.lang.String"/>
+	<field name="warehouse" class="java.lang.String"/>
+	<field name="qtyxxx" class="java.lang.Double"/>
+	<field name="QTY OUT" class="java.lang.Double"/>
+	<field name="QTY IN" class="java.lang.Double"/>
+	<field name="location" class="java.lang.String"/>
+	<field name="uom" class="java.lang.String"/>
+	<field name="balanceall" class="java.math.BigDecimal"/>
+	<field name="cust_po_no" class="java.lang.String"/>
+	<variable name="QTY OUT SUM" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{QTY OUT}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="QTY IN SUM" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{QTY IN}]]></variableExpression>
+	</variable>
+	<variable name="variable1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtyxxx}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="49" splitType="Stretch">
+			<staticText>
+				<reportElement x="203" y="10" width="168" height="27"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inventory Movement Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="21" width="61" height="20"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[From Date ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="107" height="21"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[From Product Code  ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="153" y="21" width="82" height="20"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{end_date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="143" y="21" width="10" height="20"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="107" y="0" width="264" height="21"/>
+				<textElement verticalAlignment="Top" lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{productcode}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="324" y="21" width="231" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{warehouse}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="61" y="21" width="82" height="20"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{begin_date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="264" y="21" width="60" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[Location:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement x="217" y="0" width="59" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Location]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="0" width="50" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Qtty In]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="402" y="0" width="50" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Qtty Out]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="0" width="76" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Lot No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="507" y="0" width="48" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="507" y="30" width="48" height="20">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{uom}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="452" y="0" width="55" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Net Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="61" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="61" height="20">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+				</reportElement>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<text><![CDATA[Begin Balance]]></text>
+			</staticText>
+			<textField pattern="#,##0.00000;-#,##0.00000" isBlankWhenNull="true">
+				<reportElement x="452" y="30" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{balanceall}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="61" y="0" width="51" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Customer
+PO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="111" y="0" width="106" height="30"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10"/>
+				</textElement>
+				<text><![CDATA[Document]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="111" y="0" width="106" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="276" y="0" width="76" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lot_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="402" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{QTY OUT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="352" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{QTY IN}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="61" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cust_po_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="61" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{write_date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="217" y="0" width="59" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{location}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="452" y="0" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{variable1}+$F{balanceall}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement x="107" y="0" width="217" height="20"/>
+				<textElement verticalAlignment="Top" lineSpacing="Single">
+					<font fontName="Norasi"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{productname}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="22" width="89" height="20"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="352" y="23" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{QTY IN SUM}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="107" height="20"/>
+				<textElement lineSpacing="Single">
+					<font fontName="Norasi" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total by-Product Code ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="21" width="555" height="1"/>
+			</line>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="402" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{QTY OUT SUM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="402" y="23" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{QTY OUT SUM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="352" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{QTY IN SUM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
