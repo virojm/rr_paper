@@ -6,8 +6,14 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
         <field name="arch" type="xml">
+            <!-- <field name="client_order_ref" required="1"/> -->
+            <field name="client_order_ref" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="requested_date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <group name="sale_shipping" position="after">
-              <field name="client_order_ref" required="1"/>
               <!-- <field name="requested_date" required="1"/> -->
               <!-- <field name="commitment_date"/>
               <field name="effective_date"/> -->
