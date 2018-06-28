@@ -14,7 +14,7 @@
                 <attribute name="invisible">1</attribute>
             </field> -->
             <group name="sale_shipping" position="after">
-                <field name="client_order_ref" required="1" colspan="4"/>
+                <field name="client_order_ref"/>
                 <!-- <field name="requested_date" required="1"/> -->
               <!-- <field name="commitment_date"/>
               <field name="effective_date"/> -->
