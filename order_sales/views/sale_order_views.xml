@@ -6,30 +6,25 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
         <field name="arch" type="xml">
-            <!-- <field name="payment_term_id" position="after">
-              <field name="client_order_ref" required="1" ref="sale.view_order_form.client_order_ref"/>
-              <field name="requested_date" required="1" ref="sale.view_order_form.requested_date"/>
-            </field> -->
             <group name="sale_shipping" position="inside">
-                <!-- <field name="client_order_ref"/> -->
                 <!-- <field name="requested_date"/>
                 <field name="commitment_date"/>
                 <field name="effective_date"/> -->
             </group>
         </field>
     </record>
+
     <record id="sale.view_order_tree_date" model="ir.ui.view">
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_tree"/>
         <field name="arch" type="xml">
             <field name="date_order" position="before">
-                <field name="client_order_ref"/>
+              <field name="client_order_ref"/>
             </field>
-            <field name="requested_date" required="1"/>
-            <!-- <field name="date_order" position="after">
-                <field name="requested_date"/>
-                <field name="commitment_date"/>
-            </field> -->
+            <field name="date_order" position="after">
+                <!-- <field name="requested_date"/>
+                <field name="commitment_date"/> -->
+            </field>
         </field>
     </record>
 
@@ -38,14 +33,13 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_quotation_tree"/>
         <field name="arch" type="xml">
-            <field name="date_order" position="before">
-                <field name="client_order_ref"/>
-            </field>
-            <field name="requested_date" required="1"/>
-            <!-- <field name="date_order" position="after">
-                <field name="requested_date"/>
-                <field name="commitment_date"/>
-            </field> -->
+          <field name="date_order" position="before">
+            <field name="client_order_ref"/>
+          </field>
+          <field name="date_order" position="after">
+              <!-- <field name="requested_date"/>
+              <field name="commitment_date"/> -->
+          </field>
         </field>
     </record>
   </data>
