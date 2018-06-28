@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <group name="sale_shipping" position="inside">
                 <field name="client_order_ref" required="1"/>
-                <field name="requested_date" required-"1"/>
+                <field name="requested_date" required="1"/>
                 <!-- <field name="commitment_date"/>
                 <field name="effective_date"/> -->
             </group>
