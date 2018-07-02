@@ -27,6 +27,15 @@
           <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
         </record>
 
+        <!-- To hide menuitem: Products to Upsell -->
+        <record id="make_invisible" model="res.groups">
+          <field name="name">Invisible</field>
+        </record>
+        <record model="ir.ui.menu" id="sale.menu_sale_order_upselling">
+          <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+        </record>
+
+
         <record id="product_template_tree_view" model="ir.ui.view">
             <field name="name">product.template.product.tree</field>
             <field name="model">product.template</field>
