@@ -16,6 +16,7 @@ class SaleOrder(models.Model):
     # set requested date to be mandatory at sale.py...see sale.sale_order_date - sale_order.py
     requested_date = fields.Datetime(
         readonly=False,
+        required=True,
         states={
             'draft': [('readonly', False), ('required', True)],
             'sent': [('readonly', False), ('required', True)]
