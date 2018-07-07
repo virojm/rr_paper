@@ -48,7 +48,7 @@ class Product(models.Model):
         return ean_checksum(eancode) == int(eancode[-1])
 
     def generate_barcode(self):
-        products = self.search([('barcode', '!=', False)])
+        products = self.search([('barcode', '=', False)])
         for product in products:
             bar = self.rr_generate_ean(str(product.id))
             product.barcode = bar
