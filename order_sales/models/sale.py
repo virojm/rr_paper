@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
         required=True,
         states={
             'draft': [('readonly', False), ('required', True)],
-            'sent': [('readonly', False), ('required', True)]
+            'sent': [('readonly', True), ('required', True)]
         }
     )
 

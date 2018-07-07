@@ -48,28 +48,36 @@ class Product(models.Model):
         return ean_checksum(eancode) == int(eancode[-1])
 
     def generate_barcode(self):
-        products = self.search([('barcode', '=', False)])
+        products = self.search([('barcode', '!=', False)])
         for product in products:
             bar = self.rr_generate_ean(str(product.id))
             product.barcode = bar
-        # print product.id
-        # print product.barcode
+        print product.id
+        print product.barcode
 
     @api.model
     def rr_generate_ean(self, product_id):
         res = '0000000000000'
         today = datetime.today() + timedelta(hours=7)
         str_date = datetime.strftime(today, '%y%m')
-        bar_str = str_date + str(product_id)
-        res = bar_str + res[len(bar_str):]
+        bar_str = str_date
+        resx = bar_str + res[1+len(bar_str)+len(product_id):]
+        res = resx + str(product_id) + '0'
+
+        # bar_str = str_date + str(product_id)
+        # res = bar_str + res[len(bar_str):]
+        # print resx
         # print res
         # print len(product_id)
+        # print product_id
         check_digit = str(self.ean_checksum(res))
         res = res[:-len(check_digit)]
         res = res + check_digit
         # print "=============================="
         # print res
+        # print check_digit
         return res
         # if len(res) < 13:
         #     res = res + '0' * (13 - len(res))
         # return res[:-1] + str(ean_checksum(res))
+        # print res
