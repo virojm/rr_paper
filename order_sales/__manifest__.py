@@ -7,6 +7,7 @@
     'depends': [
         'sale_stock',
         'product_sales',
+        'sale_order_dates',
     ],
     'data': [
         'views/sale_view.xml',

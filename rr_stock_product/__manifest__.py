@@ -14,3 +14,5 @@
     'auto_install': False,
 
 }
+
+    # refer to rr_paper.product_barcode to generate barcode when create new item
