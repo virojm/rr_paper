@@ -13,10 +13,12 @@ class SaleOrder(models.Model):
         size=80,
     )
 
-    # set requested date to be mandatory at sale.py...see sale.sale_order_date - sale_order.py 
+    # set requested date to be mandatory at sale.py...see sale.sale_order_date - sale_order.py
     requested_date = fields.Datetime(
         states={
-            'draft': [('readonly', False), ('required', True)],
+            # 'draft': [('readonly', False), ('required', True)],
+            # 'sent': [('readonly', False), ('required', True)]
+            'draft': [('required', True)],
             'sent': [('readonly', False), ('required', True)]
         },
     )
