@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'RR Paper Stock Report',
-    'version': '0.1',
-    'category': 'Products',
+    'name': "RR Paper - Stock Report",
 
     'summary': """RR Paper Stock Report""",
 

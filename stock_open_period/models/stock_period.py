@@ -119,6 +119,8 @@ class StockPeriod(models.Model):
                     'location_id': location.id,
                 })
 
+
+
     @api.model
     def calculate_on_hand(self):
         last_period = self.search([],order='id desc', limit=1)
@@ -126,6 +128,51 @@ class StockPeriod(models.Model):
             self.init_stock_period()
         else:
             self.calculate_from_last_period(last_period)
+
+    @api.multi
+    def recalculate_by_date(self):
+        Product = self.env['product.product']
+        Move = self.env['stock.move']
+        Location = self.env['stock.location']
+        SPLine = self.env['stock.period.line']
+        for res in self:
+            if res.date_open:
+                # date_stamp = fields.datetime.now()
+                # date_stamp = date_stamp.strftime('%Y-%m-%d %H:%M:%S')
+                date_stamp = self.date_open
+                res.period_lines.unlink()
+                products = Product.search([])
+                for product in products:
+                    locations = Location.search(
+                        [('usage', '=', 'internal')],
+                    )
+                    for location in locations:
+                        qty = 0.0
+                        in_moves = Move.search([
+                            ('date', '<=', date_stamp),
+                            ('product_id', '=', product.id),
+                            ('location_dest_id', '=', location.id),
+                            ('location_id', '!=', location.id),
+                            ('state', '=', 'done')
+                        ])
+                        out_moves = Move.search([
+                            ('date', '<=', date_stamp),
+                            ('product_id', '=', product.id),
+                            ('location_id', '=', location.id),
+                            ('location_dest_id', '!=', location.id),
+                            ('state', '=', 'done'),
+                        ])
+                        for in_move in in_moves:
+                            qty += in_move.product_uom_qty
+                        for out_move in out_moves:
+                            qty -= out_move.product_uom_qty
+                        SPLine.create({
+                            'period_id': res.id,
+                            'product_id': product.id,
+                            'uom_id': product.uom_id.id,
+                            'product_qty': qty,
+                            'location_id': location.id,
+                        })
 
 
 class StockPeriodLine(models.Model):

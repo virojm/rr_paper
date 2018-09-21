@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_card_report_origin" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="ireport.jasperserver.reportUnit" value="/SKT/WH/STOCK_CARD"/>
@@ -12,33 +12,40 @@
 		<![CDATA[select
 concat(pp.default_code,' ',pt.name) as productname,
 spl.name as lot_name,
-sq.qty as qty,
+sum(sq.qty) as qty,
 sl.name as location,
 sq.write_date as last_move,
 (
 select sum(qty)
 from stock_quant
 where lot_id = spl.id
-) as lot_qty
+) as lot_qty,
+uom.name as uom
 from
 stock_quant sq
 left join stock_production_lot spl on sq.lot_id = spl.id
 left join product_product pp on pp.id = sq.product_id
 left join product_template pt on pp.product_tmpl_id = pt.id
+left join product_uom uom on uom.id = pt.uom_id
 left join stock_location sl on sq.location_id = sl.id
 where sq.product_id in ($P!{product_id})
-order by pp.default_code]]>
+group by pp.default_code,pt.name,spl.name,sl.name,sq.write_date,spl.id,uom.name
+order by pt.name
+]]>
 	</queryString>
 	<field name="productname" class="java.lang.String"/>
-	<field name="lot_name" class="java.lang.String">
-		<fieldDescription><![CDATA[Lot/Serial Number]]></fieldDescription>
-	</field>
+	<field name="lot_name" class="java.lang.String"/>
 	<field name="qty" class="java.lang.Double">
 		<fieldDescription><![CDATA[Quantity]]></fieldDescription>
 	</field>
-	<field name="location" class="java.lang.String"/>
+	<field name="location" class="java.lang.String">
+		<fieldDescription><![CDATA[Location]]></fieldDescription>
+	</field>
 	<field name="last_move" class="java.sql.Timestamp"/>
 	<field name="lot_qty" class="java.lang.Double"/>
+	<field name="uom" class="java.lang.String">
+		<fieldDescription><![CDATA[UoM]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -47,7 +54,7 @@ order by pp.default_code]]>
 			<staticText>
 				<reportElement x="123" y="11" width="290" height="27"/>
 				<textElement textAlignment="Center" lineSpacing="Single">
-					<font fontName="Norasi" size="14" isBold="true" isUnderline="false" isStrikeThrough="false"/>
+					<font fontName="Norasi" size="14" isBold="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Product Lot Report]]></text>
 			</staticText>
@@ -56,7 +63,7 @@ order by pp.default_code]]>
 	<columnHeader>
 		<band height="31" splitType="Stretch">
 			<staticText>
-				<reportElement x="367" y="0" width="59" height="31"/>
+				<reportElement x="317" y="0" width="59" height="31"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -64,12 +71,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="10"/>
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Quantity]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="491" y="0" width="64" height="31"/>
+				<reportElement x="441" y="0" width="60" height="31"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -77,12 +84,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="10"/>
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Last Move]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="31"/>
+				<reportElement x="0" y="0" width="140" height="31"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -90,12 +97,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="10"/>
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Product]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="100" y="0" width="180" height="31"/>
+				<reportElement x="140" y="0" width="90" height="31"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -103,12 +110,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="10"/>
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Lot No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="280" y="0" width="87" height="31"/>
+				<reportElement x="230" y="0" width="87" height="31"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -116,12 +123,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="10"/>
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Location]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="426" y="0" width="65" height="31"/>
+				<reportElement x="376" y="0" width="65" height="31"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -129,16 +136,29 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="10"/>
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Total Lot Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="501" y="0" width="54" height="31"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[UoM]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="100" y="0" width="180" height="20"/>
+				<reportElement x="140" y="0" width="90" height="20"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -146,12 +166,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="8"/>
+					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{lot_name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
-				<reportElement x="367" y="0" width="59" height="20"/>
+				<reportElement x="317" y="0" width="59" height="20"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -159,12 +179,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="8"/>
+					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{qty}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="100" height="20"/>
+				<reportElement x="0" y="0" width="140" height="20"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -172,12 +192,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top" lineSpacing="Single">
-					<font fontName="Norasi"/>
+					<font fontName="Norasi" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{productname}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="280" y="0" width="87" height="20"/>
+				<reportElement x="230" y="0" width="87" height="20"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -185,12 +205,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="8"/>
+					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{location}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="491" y="0" width="64" height="20"/>
+				<reportElement x="441" y="0" width="60" height="20"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -198,12 +218,12 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Norasi" size="8"/>
+					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{last_move}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
-				<reportElement x="426" y="0" width="65" height="20"/>
+				<reportElement x="376" y="0" width="65" height="20"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -211,9 +231,22 @@ order by pp.default_code]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
-					<font fontName="Norasi" size="8"/>
+					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{lot_qty}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="501" y="0" width="54" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{uom}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
