@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_card_report_origin" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="468"/>
-	<property name="ireport.y" value="32"/>
+	<property name="ireport.x" value="22"/>
+	<property name="ireport.y" value="64"/>
 	<property name="ireport.jasperserver.reportUnit" value="/SKT/WH/STOCK_CARD"/>
 	<property name="ireport.jasperserver.url" value="http://203.113.116.170:8090/jasperserver/services/repository?wsdl"/>
 	<parameter name="location_id" class="java.lang.Integer">
@@ -20,12 +20,7 @@
 	<queryString>
 		<![CDATA[select
 sm.date + '7 hours'::interval as write_date,
-case when rtrim(ltrim(sp.name)) != '' then
-rtrim(ltrim(sp.name))
-else
-''
-end
-as name,
+rtrim(ltrim(sp.name)) as name,
 sp.origin,
 spl.name as lot_name,
 '' as job_no,
@@ -391,8 +386,7 @@ order by write_date]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Customer
-PO]]></text>
+				<text><![CDATA[Source]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="112" y="0" width="105" height="30"/>
@@ -405,7 +399,7 @@ PO]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[Document]]></text>
+				<text><![CDATA[Document No.]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -439,12 +433,12 @@ PO]]></text>
 				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{QTY IN}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement x="61" y="0" width="51" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{cust_po_no}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{origin}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="61" height="20"/>
