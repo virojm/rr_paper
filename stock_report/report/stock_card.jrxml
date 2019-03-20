@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 4.0.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_card_report_origin" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="22"/>
@@ -218,19 +219,12 @@ order by write_date]]>
 				<text><![CDATA[From Product Code  ]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="153" y="21" width="82" height="20"/>
+				<reportElement x="110" y="21" width="107" height="20"/>
 				<textElement lineSpacing="Single">
 					<font fontName="Norasi" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{end_date}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="143" y="21" width="10" height="20"/>
-				<textElement lineSpacing="Single">
-					<font fontName="Norasi" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
-				</textElement>
-				<text><![CDATA[-]]></text>
-			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="107" y="0" width="448" height="21"/>
 				<textElement verticalAlignment="Top" lineSpacing="Single">
@@ -246,7 +240,7 @@ order by write_date]]>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{warehouse}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="61" y="21" width="82" height="20"/>
+				<reportElement x="61" y="21" width="51" height="20"/>
 				<textElement lineSpacing="Single">
 					<font fontName="Norasi" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
