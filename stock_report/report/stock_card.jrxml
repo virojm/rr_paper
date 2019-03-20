@@ -362,7 +362,7 @@ order by write_date]]>
 				</textElement>
 				<text><![CDATA[Begin Balance]]></text>
 			</staticText>
-			<textField pattern="#,##0.00000;-#,##0.00000" isBlankWhenNull="true">
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
 				<reportElement x="452" y="30" width="55" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Norasi" size="8" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
