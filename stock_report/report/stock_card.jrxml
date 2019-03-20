@@ -106,7 +106,7 @@ where sm.state = 'done' and sm.product_id = $P{product_id}
 and (sm.location_id = $P{location_id} or sm.location_dest_id = $P{location_id}) and
 (sm.location_id != sm.location_dest_id)
 and
-(sm.date + interval '7 hours' >= date($P{begin_date}) AND sm.date + interval '7 hours' < date($P{end_date}) + interval '1 day')
+(sm.date + interval '7 hours' >= date($P{begin_date}) + interval '1 day' AND sm.date + interval '7 hours' < date($P{end_date}) + interval '1 day')
 union all
 select
 date($P{begin_date}) as write_date,
@@ -149,7 +149,7 @@ and (sm.location_id = $P{location_id} or sm.location_dest_id = $P{location_id})
 and
 (sm.location_id != sm.location_dest_id)
 and
-(sm.date + interval '7 hours' >= date($P{begin_date}) AND sm.date + interval '7 hours' < date($P{end_date})+ interval '1 day'))
+(sm.date + interval '7 hours' >= date($P{begin_date}) + interval '1 day' AND sm.date + interval '7 hours' < date($P{end_date})+ interval '1 day'))
 order by write_date]]>
 	</queryString>
 	<field name="write_date" class="java.sql.Timestamp">
