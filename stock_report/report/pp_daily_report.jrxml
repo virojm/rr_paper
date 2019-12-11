@@ -111,7 +111,7 @@ order by pt.name]]>
 	<title>
 		<band height="32" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="146" height="32"/>
+				<reportElement x="0" y="0" width="120" height="32"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 					<font fontName="Norasi" size="14" isBold="true" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
@@ -122,14 +122,14 @@ order by pt.name]]>
 	<pageHeader>
 		<band height="26" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="146" y="0" width="105" height="26"/>
+				<reportElement x="120" y="0" width="131" height="26"/>
 				<textElement textAlignment="Center" lineSpacing="Single">
 					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{current_date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="146" height="26"/>
+				<reportElement x="0" y="0" width="120" height="26"/>
 				<textElement textAlignment="Center" lineSpacing="Single">
 					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
@@ -140,7 +140,7 @@ order by pt.name]]>
 	<columnHeader>
 		<band height="30" splitType="Stretch">
 			<staticText>
-				<reportElement x="146" y="0" width="105" height="30"/>
+				<reportElement x="120" y="0" width="131" height="30"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -166,7 +166,7 @@ order by pt.name]]>
 				<text><![CDATA[เข้า (ม้วน)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="146" height="30"/>
+				<reportElement x="0" y="0" width="120" height="30"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -222,7 +222,7 @@ order by pt.name]]>
 	<detail>
 		<band height="25" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="146" y="0" width="105" height="25"/>
+				<reportElement x="120" y="0" width="131" height="25"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -287,7 +287,7 @@ order by pt.name]]>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{qty_in_roll}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="146" height="25"/>
+				<reportElement x="0" y="0" width="120" height="25"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
