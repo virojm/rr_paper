@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 3.7.5  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stock_card_report_origin" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="22"/>
+	<property name="ireport.y" value="64"/>
+	<property name="ireport.jasperserver.reportUnit" value="/SKT/WH/STOCK_CARD"/>
+	<property name="ireport.jasperserver.url" value="http://203.113.116.170:8090/jasperserver/services/repository?wsdl"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="rr_paper"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="current_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+date('2018-09-19') as current_date,
+pt.name as product_name,
+spt.name as type_name,
+(
+select coalesce(sum(sq2.qty), 0)
+from stock_move sm2
+left join stock_picking sp2 on sp2.id = sm2.picking_id
+left join stock_picking_type spt2 on spt2.id = sp2.picking_type_id
+left join stock_quant_move_rel smqr2 on sm2.id = smqr2.move_id
+left join stock_quant sq2 on sq2.id = smqr2.quant_id
+where
+sm2.id = sm.id
+and spt2.code = 'incoming'
+) as qty_in_kg,
+(
+select coalesce(count(sq3.qty), 0)
+from stock_move sm3
+left join stock_picking sp3 on sp3.id = sm3.picking_id
+left join stock_picking_type spt3 on spt3.id = sp3.picking_type_id
+left join stock_quant_move_rel smqr3 on sm3.id = smqr3.move_id
+left join stock_quant sq3 on sq3.id = smqr3.quant_id
+where
+sm3.id = sm.id
+and spt3.code = 'incoming'
+) as qty_in_roll,
+(
+select coalesce(sum(sqo2.qty), 0)
+from stock_move smo2
+left join stock_picking spo2 on spo2.id = smo2.picking_id
+left join stock_picking_type spto2 on spto2.id = spo2.picking_type_id
+left join stock_quant_move_rel smqro2 on smo2.id = smqro2.move_id
+left join stock_quant sqo2 on sqo2.id = smqro2.quant_id
+where
+smo2.id = sm.id
+and spto2.code != 'incoming'
+) as qty_out_kg,
+(
+select coalesce(count(sqo3.qty), 0)
+from stock_move smo3
+left join stock_picking spo3 on spo3.id = smo3.picking_id
+left join stock_picking_type spto3 on spto3.id = spo3.picking_type_id
+left join stock_quant_move_rel smqro3 on smo3.id = smqro3.move_id
+left join stock_quant sqo3 on sqo3.id = smqro3.quant_id
+where
+smo3.id = sm.id
+and spto3.code != 'incoming'
+) as qty_out_roll
+from product_template pt
+left join stock_move sm on sm.product_id = pt.id
+left join stock_picking sp on sp.id = sm.picking_id
+left join stock_picking_type spt on spt.id = sp.picking_type_id
+where 
+spt.name like '%PP%'
+and sp.state = 'done'
+and (sm.date + '7 hours'::interval)::date >= $P{current_date}::date and (sm.date + '7 hours'::interval)::date < $P{current_date}::date + '1 day'::interval
+order by pt.name]]>
+	</queryString>
+	<field name="current_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="current_date"/>
+	</field>
+	<field name="product_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="product_name"/>
+	</field>
+	<field name="type_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="type_name"/>
+	</field>
+	<field name="qty_in_kg" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="qty_in_kg"/>
+	</field>
+	<field name="qty_in_roll" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="qty_in_roll"/>
+	</field>
+	<field name="qty_out_kg" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="qty_out_kg"/>
+	</field>
+	<field name="qty_out_roll" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="qty_out_roll"/>
+	</field>
+	<variable name="QTY OUT ROLL" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{qty_out_roll}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="QTY IN ROLL" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{qty_in_roll}]]></variableExpression>
+	</variable>
+	<variable name="QTY IN KG" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{qty_in_kg}]]></variableExpression>
+	</variable>
+	<variable name="QTY OUT KG" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{qty_out_kg}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="146" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="14" isBold="true" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[PP Daily Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="26" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="146" y="0" width="105" height="26"/>
+				<textElement textAlignment="Center" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{current_date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="146" height="26"/>
+				<textElement textAlignment="Center" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="146" y="0" width="105" height="30"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Operation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="251" y="0" width="77" height="30"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[เข้า (ม้วน)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="146" height="30"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Product Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="0" width="74" height="30"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[เข้า (กก.)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="479" y="0" width="76" height="30"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ออก (กก.)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="402" y="0" width="77" height="30"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="10" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ออก (ม้วน)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="146" y="0" width="105" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{type_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="479" y="0" width="76" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{qty_out_kg}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="402" y="0" width="77" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{qty_out_roll}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="328" y="0" width="74" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{qty_in_kg}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="251" y="0" width="77" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{qty_in_roll}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="146" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{product_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="25">
+			<textField pattern="#0.00">
+				<reportElement x="328" y="0" width="74" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{QTY IN KG}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00">
+				<reportElement x="402" y="0" width="77" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{QTY OUT ROLL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement x="479" y="0" width="76" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{QTY OUT KG}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement x="251" y="0" width="77" height="25"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font fontName="Norasi" size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{QTY IN ROLL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
