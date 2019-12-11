@@ -30,5 +30,6 @@
         #'templates.xml',
         'wizard/stock_card_report_view.xml',
         'wizard/product_lot_report_view.xml',
+        'wizard/pp_daily_report_view.xml',
     ],
 }
