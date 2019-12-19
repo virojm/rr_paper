@@ -74,7 +74,7 @@ and sp.state = 'done'
 and (sm.date + '7 hours'::interval)::date >= $P{current_date}::date and (sm.date + '7 hours'::interval)::date < $P{current_date}::date + '1 day'::interval
 order by pt.name]]>
 	</queryString>
-	<field name="current_date" class="java.sql.Date">
+	<field name="current_date" class="java.util.Date">
 		<property name="com.jaspersoft.studio.field.label" value="current_date"/>
 	</field>
 	<field name="product_name" class="java.lang.String">
