@@ -13,7 +13,7 @@
 	</parameter>
 	<queryString>
 		<![CDATA[select
-date('2018-09-19') as current_date,
+date($P{current_date}) as current_date,
 pt.name as product_name,
 spt.name as type_name,
 (
@@ -24,7 +24,8 @@ left join stock_picking_type spt2 on spt2.id = sp2.picking_type_id
 left join stock_quant_move_rel smqr2 on sm2.id = smqr2.move_id
 left join stock_quant sq2 on sq2.id = smqr2.quant_id
 where
-sm2.id = sm.id
+sm2.product_id = sm.product_id
+and sp2.id = sm.picking_id
 and spt2.code = 'incoming'
 ) as qty_in_kg,
 (
@@ -35,7 +36,8 @@ left join stock_picking_type spt3 on spt3.id = sp3.picking_type_id
 left join stock_quant_move_rel smqr3 on sm3.id = smqr3.move_id
 left join stock_quant sq3 on sq3.id = smqr3.quant_id
 where
-sm3.id = sm.id
+sm3.product_id = sm.product_id
+and sp3.id = sm.picking_id
 and spt3.code = 'incoming'
 ) as qty_in_roll,
 (
@@ -46,7 +48,8 @@ left join stock_picking_type spto2 on spto2.id = spo2.picking_type_id
 left join stock_quant_move_rel smqro2 on smo2.id = smqro2.move_id
 left join stock_quant sqo2 on sqo2.id = smqro2.quant_id
 where
-smo2.id = sm.id
+smo2.product_id = sm.product_id
+and spo2.id = sm.picking_id
 and spto2.code != 'incoming'
 ) as qty_out_kg,
 (
@@ -57,7 +60,8 @@ left join stock_picking_type spto3 on spto3.id = spo3.picking_type_id
 left join stock_quant_move_rel smqro3 on smo3.id = smqro3.move_id
 left join stock_quant sqo3 on sqo3.id = smqro3.quant_id
 where
-smo3.id = sm.id
+smo3.product_id = sm.product_id
+and spo3.id = sm.picking_id
 and spto3.code != 'incoming'
 ) as qty_out_roll
 from product_template pt
@@ -232,7 +236,7 @@ order by pt.name]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Norasi" size="12" pdfFontName="Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{type_name}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{type_name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
 				<reportElement x="479" y="0" width="76" height="25"/>
