@@ -13,7 +13,7 @@
 	</parameter>
 	<queryString>
 		<![CDATA[select distinct
-date($P{current_date}) as current_date,
+date(sm.date) as current_date,
 pt.name as product_name,
 spt.name as type_name,
 (
