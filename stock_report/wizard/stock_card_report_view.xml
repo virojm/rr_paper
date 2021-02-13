@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+
+      <report string="Stock Card Report"
+                model="stock.card.report"
+                auto="True"
+                name="stock.card.report.jasper"
+                rml="stock_report/report/stock_card.jrxml"
+                id="stock_card_report"/>
+
+      <record id="stock_card_report_view" model="ir.ui.view">
+          <field name="name">stock.card.report.view</field>
+          <field name="model">stock.card.report</field>
+          <field name="arch" type="xml">
+              <form>
+                  <group>
+                      <group>
+                          <field name="date_start"/>
+                      </group>
+                      <group>
+                          <field name="date_end"/>
+                      </group>
+                  </group>
+                  <group>
+                      <field name="product_id"/>
+                      <field name="location_id"/>
+                  </group>
+                  <footer>
+                      <button name="action_print_report"
+                              string="Print"
+                              type="object"/>
+                      or
+                      <button string="Cancel" class="oe_link"
+                              special="cancel"/>
+                  </footer>
+              </form>
+          </field>
+      </record>
+
+      <act_window id="action_stock_card_report"
+                  name="Stock Card Report"
+                  res_model="stock.card.report"
+                  view_mode="form"
+                  target="new"/>
+
+      <menuitem id="menu_print_stock_card_report"
+                parent="stock.menu_stock_root"
+                name="Stock Card Report"
+                sequence="3"/>
+
+      <menuitem id="menu_stock_card_report"
+                parent="menu_print_stock_card_report"
+                action="action_stock_card_report"
+                sequence="1"/>
+  </data>
+</openerp>

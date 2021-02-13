@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+
+      <report string="PP Daily Report"
+                model="pp.daily.report"
+                auto="True"
+                name="pp.daily.report.jasper"
+                rml="stock_report/report/pp_daily_report.jrxml"
+                id="pp_daily_report"/>
+
+      <record id="pp_daily_report_view" model="ir.ui.view">
+          <field name="name">pp.daily.report.view</field>
+          <field name="model">pp.daily.report</field>
+          <field name="arch" type="xml">
+              <form>
+                  <group>
+                      <group>
+                          <field name="date_current"/>
+                      </group>
+                      <group />
+                  </group>
+                  <group />
+                  <footer>
+                      <button name="action_print_report"
+                              string="Print"
+                              type="object"/>
+                      or
+                      <button string="Cancel" class="oe_link"
+                              special="cancel"/>
+                  </footer>
+              </form>
+          </field>
+      </record>
+
+      <act_window id="action_pp_daily_report"
+                  name="PP Daily Report"
+                  res_model="pp.daily.report"
+                  view_mode="form"
+                  target="new"/>
+
+      <menuitem id="menu_print_pp_daily_report"
+                parent="stock.menu_stock_root"
+                name="PP Daily Report"
+                sequence="4"/>
+
+      <menuitem id="menu_pp_daily_report"
+                parent="menu_print_pp_daily_report"
+                action="action_pp_daily_report"
+                sequence="1"/>
+  </data>
+</openerp>

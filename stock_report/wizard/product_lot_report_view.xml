@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+
+      <report string="Product Lot Report"
+                model="product.lot.report"
+                auto="True"
+                name="product.lot.report.jasper"
+                rml="stock_report/report/product_lot.jrxml"
+                id="product_lot_report"/>
+
+      <record id="product_lot_report_view" model="ir.ui.view">
+          <field name="name">product.lot.report.view</field>
+          <field name="model">product.lot.report</field>
+          <field name="arch" type="xml">
+              <form>
+                  <group>
+                      <group>
+                          <field name="product_ids" widget="many2many_tags"/>
+                      </group>
+                      <group />
+                  </group>
+                  <group />
+                  <footer>
+                      <button name="action_print_report"
+                              string="Print"
+                              type="object"/>
+                      or
+                      <button string="Cancel" class="oe_link"
+                              special="cancel"/>
+                  </footer>
+              </form>
+          </field>
+      </record>
+
+      <act_window id="action_product_lot_report"
+                  name="Product Lot Report"
+                  res_model="product.lot.report"
+                  view_mode="form"
+                  target="new"/>
+
+
+      <menuitem id="menu_product_lot_report"
+                parent="menu_print_stock_card_report"
+                action="action_product_lot_report"
+                sequence="1"/>
+  </data>
+</openerp>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_partner_property_form" model="ir.ui.view">
+            <field name="name">partner.product.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+              <field name="name" position="after">
+                  <field name="vat" string="Tax ID" placeholder='TAX ID'/>
+                  <!-- <field name="person_name" placeholder="Contact Person"/> -->
+              </field>
+
+              <field name="company_type" position="attributes">
+                  <attribute name="invisible">1</attribute>
+              </field>
+
+              <field name="parent_id" position="attributes">
+                  <attribute name="invisible">1</attribute>
+              </field>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

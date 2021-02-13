@@ -282,7 +282,7 @@ public class JasperServer {
 
     public static void main (String [] args) {
         try {
-            int port = 8090;
+            int port = 8091;
             if ( args.length > 0 ) {
                 port = java.lang.Integer.parseInt( args[0] );
             }

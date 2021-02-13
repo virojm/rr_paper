@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+      <act_window id="action_prod2purchase"
+        name="Prod to Purchase"
+        res_model="product.template"
+        domain="[('purchase_ok', '=', True)]"
+        context="{
+          'default_purchase_ok': True,
+          'search_default_filter_to_purchase':1,
+        }"
+        view_mode="kanban,tree,form"/>
+
+      <menuitem id="menu_prod2purchase"
+        name="Prod-to-Purchase"
+        parent="purchase.menu_procurement_management"
+        sequence="20"
+        action="action_prod2purchase"/>
+
+        <!-- To hide menuitem -->
+        <record id="make_invisible" model="res.groups">
+          <field name="name">Invisible</field>
+        </record>
+        <record model="ir.ui.menu" id="purchase.menu_procurement_partner_contact_form">
+          <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+        </record>
+
+
+    </data>
+</openerp>
